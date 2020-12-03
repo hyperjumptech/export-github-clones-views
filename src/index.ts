@@ -1,11 +1,16 @@
 import { Command, flags } from "@oclif/command";
-import axios, { AxiosRequestConfig } from "axios";
-import { MongoClient } from "mongodb";
 import Listr from "listr";
+import {
+  fetchClones,
+  fetchViews,
+  mergeClonesAndViews,
+  saveToDB
+} from "./helper";
 
 class GithubClonesViews extends Command {
   static description =
     "Fetch the clones and views numbers for Github repositories.";
+
   static strict = false;
 
   static usage =
@@ -84,129 +89,8 @@ class GithubClonesViews extends Command {
       }
     ]);
 
-    tasks.run().catch((err: any) => {
-      console.error(err);
-    });
+    await tasks.run();
   }
 }
-
-const axiosConfigForURL = (
-  url: string,
-  username: string,
-  password: string
-): AxiosRequestConfig => ({
-  method: "GET",
-  url,
-  auth: {
-    username,
-    password
-  },
-  headers: {
-    Accept: "application/vnd.github.v3+json"
-  }
-});
-
-const fetchClones = (
-  repositories: Array<any>,
-  username: string,
-  password: string
-) => {
-  return Promise.all(
-    repositories.map((repo) =>
-      axios(
-        axiosConfigForURL(
-          `https://api.github.com/repos/${repo}/traffic/clones`,
-          username,
-          password
-        )
-      ).then((res) => {
-        const clones = res.data.clones.map((clone: any) => ({
-          ...clone,
-          repo,
-          types: "clones"
-        }));
-        return {
-          ...res.data,
-          clones
-        };
-      })
-    )
-  );
-};
-
-const fetchViews = (
-  repositories: Array<any>,
-  username: string,
-  password: string
-) => {
-  return Promise.all(
-    repositories.map((repo) =>
-      axios(
-        axiosConfigForURL(
-          `https://api.github.com/repos/${repo}/traffic/views`,
-          username,
-          password
-        )
-      ).then((res) => {
-        const views = res.data.views.map((view: any) => ({
-          ...view,
-          repo,
-          types: "views"
-        }));
-        return {
-          ...res.data,
-          views
-        };
-      })
-    )
-  );
-};
-
-const mergeClonesAndViews = (clones: Array<any>, views: Array<any>) => {
-  return [].concat(
-    ...[...clones.map((c: any) => c.clones), ...views.map((c: any) => c.views)]
-  );
-};
-
-const saveToDB = ({
-  dbURI,
-  clones,
-  views
-}: {
-  dbURI: string;
-  clones: any;
-  views: any;
-}) => {
-  const allData = mergeClonesAndViews(clones, views);
-
-  const client = new MongoClient(dbURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
-
-  return new Promise((resolve, reject) => {
-    client.connect(async (err) => {
-      const collection = client.db().collection("stats");
-      try {
-        await collection.createIndex(
-          { types: 1, timestamp: 1, repo: 1 },
-          { unique: true }
-        );
-        await collection.insertMany(allData, { ordered: false });
-        await client.close();
-
-        resolve();
-      } catch (error) {
-        if (error.message.startsWith("E11000 duplicate key error collection")) {
-          await client.close();
-          resolve("Save to db: Skipped some duplicated records");
-        } else {
-          await client.close();
-          reject(error);
-        }
-      }
-    });
-  });
-};
 
 export = GithubClonesViews;
