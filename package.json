@@ -1,5 +1,5 @@
 {
-  "name": "export-github-clones-views",
+  "name": "@hyperjumptech/export-github-clones-views",
   "description": "A CLI to export the stats of clones and views of repositories",
   "version": "0.0.1",
   "author": "Nico Prananta @nico-hyperjump",
