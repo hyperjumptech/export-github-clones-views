@@ -1,9 +1,11 @@
 name: Export cron
 
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 0 * * 0'
 
 jobs:
-  build:
+  export:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v1
