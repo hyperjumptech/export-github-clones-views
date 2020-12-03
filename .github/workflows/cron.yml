@@ -1,0 +1,19 @@
+name: Export cron
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm i -g @hyperjumptech/export-github-clones-views
+      - shell: bash
+        env: 
+          GITHUB_USERNAME: ${{ secrets.GITHB_USERNAME }}
+          GITHUB_PASSWORD: ${{ secrets.GITHB_PASSWORD }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          export-github-clones-views -u "$GITHUB_USERNAME" -p "$GITHUB_PASSWORD" -m "$MONGODB_URI" hyperjumptech/export-github-clones-views hyperjumptech/hansip-web hyperjumptech/procheck hyperjumptech/branch-preview hyperjumptech/grule-rule-engine hyperjumptech/hansip hyperjumptech/procheck-configs hyperjumptech/firebase-cronjob hyperjumptech/beda hyperjumptech/react-native-confetti hyperjumptech/js-urai hyperjumptech/universal-update-checker hyperjumptech/jiffy
