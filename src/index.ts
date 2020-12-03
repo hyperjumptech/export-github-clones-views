@@ -13,7 +13,7 @@ class GithubClonesViews extends Command {
     airtableKey: flags.string({ char: "k" }),
     airtableURL: flags.string({ char: "a" }),
     user: flags.string({ char: "u" }),
-    password: flags.string({ char: "p" }),
+    password: flags.string({ char: "p" })
   };
 
   async run() {
@@ -24,11 +24,11 @@ class GithubClonesViews extends Command {
       url,
       auth: {
         username: flags.user || "",
-        password: flags.password || "",
+        password: flags.password || ""
       },
       headers: {
-        Accept: "application/vnd.github.v3+json",
-      },
+        Accept: "application/vnd.github.v3+json"
+      }
     });
 
     const clones = await Promise.all(
@@ -41,11 +41,11 @@ class GithubClonesViews extends Command {
           const clones = res.data.clones.map((clone: any) => ({
             ...clone,
             repo,
-            types: "clones",
+            types: "clones"
           }));
           return {
             ...res.data,
-            clones,
+            clones
           };
         })
       )
@@ -61,11 +61,11 @@ class GithubClonesViews extends Command {
           const views = res.data.views.map((view: any) => ({
             ...view,
             repo,
-            types: "views",
+            types: "views"
           }));
           return {
             ...res.data,
-            views,
+            views
           };
         })
       )
@@ -91,8 +91,8 @@ class GithubClonesViews extends Command {
     const airtableRecords = chunks.map((chunk) => {
       return {
         records: chunk.map((a) => ({
-          fields: a,
-        })),
+          fields: a
+        }))
       };
     });
 
@@ -104,9 +104,9 @@ class GithubClonesViews extends Command {
           url: flags.airtableURL,
           headers: {
             Authorization: `Bearer ${flags.airtableKey}`,
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          data,
+          data
         })
           .then((res) => res.data)
           .catch((error) => {
