@@ -1,11 +1,12 @@
 {
-  "name": "github-clones-views",
-  "version": "0.0.0",
-  "author": "Nico Prananta @nicnocquee",
+  "name": "export-github-clones-views",
+  "description": "A CLI to export the stats of clones and views of repositories",
+  "version": "0.0.1",
+  "author": "Nico Prananta @nico-hyperjump",
   "bin": {
-    "github-clones-views": "./bin/run"
+    "export-github-clones-views": "./bin/run"
   },
-  "bugs": "https://github.com/nicnocquee/github-clones-views/issues",
+  "bugs": "https://github.com/hyperjumptech/export-github-clones-views/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -40,16 +41,16 @@
     "/bin",
     "/lib"
   ],
-  "homepage": "https://github.com/nicnocquee/github-clones-views",
+  "homepage": "https://github.com/hyperjumptech/export-github-clones-views",
   "keywords": [
     "oclif"
   ],
   "license": "MIT",
   "main": "lib/index.js",
   "oclif": {
-    "bin": "github-clones-views"
+    "bin": "export-github-clones-views"
   },
-  "repository": "nicnocquee/github-clones-views",
+  "repository": "hyperjumptech/export-github-clones-views",
   "scripts": {
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
