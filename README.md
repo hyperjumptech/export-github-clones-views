@@ -6,11 +6,11 @@
 
 # About
 
-This is a CLI to fetch the daily number of **clones** and **views** of one or many github repositories. You can run this script regularly to track the traffic of clones and views of your repositories in a long term since the data shown in a Github repository website cannot be exported and only shows up to few days back.
+This is a CLI to fetch the daily number of **clones** and **views** of one or many github repositories in which you have push access. You can run this script regularly to track the traffic of clones and views of your repositories in a long term since the data shown in a Github repository website cannot be exported and only shows up to few days back.
 
 # Prerequisite
 
-1. Create a Personal Access Token in your [Github settings](https://github.com/settings/tokens).
+1. Create a Personal Access Token in your [Github settings](https://github.com/settings/tokens). Make sure you select the **repo** scope.
 2. Optionally run a mongodb server to store the data.
 
 # Install
@@ -36,4 +36,5 @@ $ export-github-clones-views -u <GITHUB_USERNAME> -p <GITHUB_PASSWORD> -m <MONGO
 Notes:
 
 1. You can add any number of repositories as the argument of the command.
-2. The repository needs to include both the username/organization and the repository name, e.g., `hyperjumptech/export-github-clones-views`
+2. The repository needs to include both the username/organization and the repository name, e.g., `hyperjumptech/export-github-clones-views`.
+3. Example of `MONGODB_URI`: `mongodb+srv://username:password@mongodb.net/database-name`
