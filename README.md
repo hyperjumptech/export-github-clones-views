@@ -1,9 +1,8 @@
 # export-github-clones-views
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/export-github-clones-views.svg)](https://npmjs.org/package/export-github-clones-views)
-[![Downloads/week](https://img.shields.io/npm/dw/export-github-clones-views.svg)](https://npmjs.org/package/export-github-clones-views)
-[![License](https://img.shields.io/npm/l/export-github-clones-views.svg)](https://github.com/hyperjumptech/export-github-clones-views/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@hyperjumptech/export-github-clones-views.svg)](https://npmjs.org/package/@hyperjumptech/export-github-clones-views)
+[![License](https://img.shields.io/npm/l/@hyperjumptech/export-github-clones-views)](https://github.com/hyperjumptech/export-github-clones-views/blob/master/package.json)
 
 # About
 
