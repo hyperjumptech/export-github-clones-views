@@ -1,5 +1,6 @@
 import { Command, flags } from "@oclif/command";
 import axios, { AxiosRequestConfig } from "axios";
+import { MongoClient } from "mongodb";
 
 class GithubClonesViews extends Command {
   static description =
@@ -10,15 +11,24 @@ class GithubClonesViews extends Command {
     // add --version flag to show CLI version
     version: flags.version({ char: "v" }),
     help: flags.help({ char: "h" }),
-    airtableKey: flags.string({ char: "k" }),
-    airtableURL: flags.string({ char: "a" }),
-    user: flags.string({ char: "u" }),
-    password: flags.string({ char: "p" })
+    mongo: flags.string({ char: "m", required: true, env: "MONGODB_URI" }),
+    user: flags.string({
+      char: "u",
+      description: "Github's username",
+      required: true,
+      env: "GITHUB_USERNAME"
+    }),
+    password: flags.string({
+      char: "p",
+      description: "Github's password",
+      required: true,
+      env: "GITHUB_PASSWORD"
+    })
   };
 
   async run() {
     const { argv: repositories, flags } = this.parse(GithubClonesViews);
-    //console.log(`running my command with args: ${argv.join(",")}`);
+
     const axiosConfigForURL = (url: string): AxiosRequestConfig => ({
       method: "GET",
       url,
@@ -75,60 +85,27 @@ class GithubClonesViews extends Command {
       ...[...clones.map((c) => c.clones), ...views.map((c) => c.views)]
     );
 
-    const chunks = [];
-    var i,
-      j,
-      temparray,
-      chunk = 10;
-    for (i = 0, j = allData.length; i < j; i += chunk) {
-      temparray = allData.slice(i, i + chunk);
-      // do whatever
-      chunks.push(temparray);
-    }
+    const dbURI = flags.mongo || "";
 
-    console.log(chunks);
-
-    const airtableRecords = chunks.map((chunk) => {
-      return {
-        records: chunk.map((a) => ({
-          fields: a
-        }))
-      };
+    const client = new MongoClient(dbURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
     });
-
-    const responses = await Promise.all(
-      airtableRecords.map((rec) => {
-        const data = JSON.stringify(rec, null, 2);
-        return axios({
-          method: "POST",
-          url: flags.airtableURL,
-          headers: {
-            Authorization: `Bearer ${flags.airtableKey}`,
-            "Content-Type": "application/json"
-          },
-          data
-        })
-          .then((res) => res.data)
-          .catch((error) => {
-            if (error.response) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            } else if (error.request) {
-              // The request was made but no response was received
-              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-              // http.ClientRequest in node.js
-              console.log(error.request);
-            } else {
-              // Something happened in setting up the request that triggered an Error
-              console.log("Error", error.message);
-            }
-            console.log(error.config);
-          });
-      })
-    );
+    client.connect(async (err) => {
+      const collection = client.db().collection("stats");
+      try {
+        await collection.createIndex(
+          { types: 1, timestamp: 1, repo: 1 },
+          { unique: true }
+        );
+        await collection.insertMany(allData, { ordered: false });
+        await client.close();
+        process.exit(0);
+      } catch (error) {
+        console.log(error);
+        process.exit(1);
+      }
+    });
   }
 }
 
