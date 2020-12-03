@@ -37,4 +37,5 @@ Notes:
 
 1. You can add any number of repositories as the argument of the command.
 2. The repository needs to include both the username/organization and the repository name, e.g., `hyperjumptech/export-github-clones-views`.
-3. Example of `MONGODB_URI`: `mongodb+srv://username:password@mongodb.net/database-name`
+3. Example of `MONGODB_URI`: `mongodb+srv://username:password@mongodb.net/database-name`.
+4. Use the Personal Access Token you generated as `GITHUB_PASSWORD`
