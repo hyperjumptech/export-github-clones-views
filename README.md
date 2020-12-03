@@ -17,7 +17,7 @@ This is a CLI to fetch the daily number of **clones** and **views** of one or ma
 # Install
 
 ```sh-session
-$ npm install -g export-github-clones-views
+$ npm install -g @hyperjumptech/export-github-clones-views
 ```
 
 # Usage
