@@ -17,19 +17,20 @@ class GithubClonesViews extends Command {
     mongo: flags.string({
       char: "m",
       description:
-        "MongoDB URI, e.g., mongodb+srv://user:pass@cluster.mongodb.net/databasename. If not provided, this CLI will print the data to console.",
+        "MongoDB URI, e.g., mongodb+srv://user:pass@cluster.mongodb.net/databasename. If not provided, this CLI will print the data to console. You can also set the value to MONGODB_URI environment variable.",
       env: "MONGODB_URI"
     }),
     user: flags.string({
       char: "u",
-      description: "Github's username",
+      description:
+        "Github's username. You can also set the value to GITHUB_USERNAME environment variable.",
       required: true,
       env: "GITHUB_USERNAME"
     }),
     password: flags.string({
       char: "p",
       description:
-        "Github's password or personal access token. You can create the token from https://github.com/settings/tokens",
+        "Github's password or personal access token. You can create the token from https://github.com/settings/tokens. You can also set the value to GITHUB_PASSWORD environment variable.",
       required: true,
       env: "GITHUB_PASSWORD"
     })
