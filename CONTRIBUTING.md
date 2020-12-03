@@ -12,14 +12,14 @@ Please note we have a code of conduct, please follow it in all your interactions
 4. Enter the cloned directory.
 5. Apply new "upstream" to original `hyperjumptech/export-github-clones-views` git
 6. Now you can work on your account
-7. Remember to pull from your upstream often. `git pull upstream master`
+7. Remember to pull from your upstream often. `git pull upstream main`
 
 ## Pull Request Process
 
-1. Make sure you always have the most recent update from your upstream. `git pull upstream master`
+1. Make sure you always have the most recent update from your upstream. `git pull upstream main`
 2. Resolve all conflict, if any.
 3. Make sure `yarn test` always successful (you wont be able to create pull request if this fail, circle-ci, travis-ci and azure-devops will make sure of this.)
-4. Push your code to your project's master repository.
+4. Push your code to your project's main repository.
 5. Create PullRequest.
    - Go to `github.com/hyperjumptech/export-github-clones-views`
    - Select `Pull Request` tab
