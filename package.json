@@ -47,7 +47,7 @@
   "keywords": [
     "oclif"
   ],
-  "license": "MIT",
+  "license": "Apache",
   "main": "lib/index.js",
   "oclif": {
     "bin": "export-github-clones-views"
@@ -55,7 +55,7 @@
   "repository": "hyperjumptech/export-github-clones-views",
   "scripts": {
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },

@@ -1,0 +1,23 @@
+name: 'Code Quality'
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: run tests
+        run: yarn test
+
+      - name: build
+        run: yarn pack
