@@ -6,7 +6,7 @@
 
 # About
 
-This is a CLI to fetch the daily number of **clones** and **views** of one or many github repositories in which you have push access. You can run this script regularly to track the traffic of clones and views of your repositories in a long term since the data shown in a Github repository website cannot be exported and only shows up to few days back.
+This is a CLI to fetch the daily number of **clones** and **views** of one or many github repositories to which you have push access. You can run this script regularly to track the traffic of clones and views of your repositories in a long term since the data shown in a Github repository website cannot be exported and only shows up to few days back.
 
 # Prerequisite
 
