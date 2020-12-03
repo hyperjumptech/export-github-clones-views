@@ -1,6 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import axios, { AxiosRequestConfig } from "axios";
 import { MongoClient } from "mongodb";
+import Listr from "listr";
 
 class GithubClonesViews extends Command {
   static description =
@@ -41,70 +42,114 @@ class GithubClonesViews extends Command {
       }
     });
 
-    const clones = await Promise.all(
-      repositories.map((repo) =>
-        axios(
-          axiosConfigForURL(
-            `https://api.github.com/repos/${repo}/traffic/clones`
-          )
-        ).then((res) => {
-          const clones = res.data.clones.map((clone: any) => ({
-            ...clone,
-            repo,
-            types: "clones"
-          }));
-          return {
-            ...res.data,
-            clones
-          };
-        })
-      )
-    );
+    const tasks = new Listr([
+      {
+        title: "Fetch clones stats",
+        task: async (ctx: any) => {
+          const clones = await Promise.all(
+            repositories.map((repo) =>
+              axios(
+                axiosConfigForURL(
+                  `https://api.github.com/repos/${repo}/traffic/clones`
+                )
+              ).then((res) => {
+                const clones = res.data.clones.map((clone: any) => ({
+                  ...clone,
+                  repo,
+                  types: "clones"
+                }));
+                return {
+                  ...res.data,
+                  clones
+                };
+              })
+            )
+          );
+          ctx.clones = clones;
+        }
+      },
+      {
+        title: "Fetch views stats",
+        task: async (ctx: any) => {
+          const views = await Promise.all(
+            repositories.map((repo) =>
+              axios(
+                axiosConfigForURL(
+                  `https://api.github.com/repos/${repo}/traffic/views`
+                )
+              ).then((res) => {
+                const views = res.data.views.map((view: any) => ({
+                  ...view,
+                  repo,
+                  types: "views"
+                }));
+                return {
+                  ...res.data,
+                  views
+                };
+              })
+            )
+          );
+          ctx.views = views;
+        }
+      },
+      {
+        title: "Save to db",
+        task: async (ctx: any, task: any) => {
+          const { clones, views } = ctx;
 
-    const views = await Promise.all(
-      repositories.map((repo) =>
-        axios(
-          axiosConfigForURL(
-            `https://api.github.com/repos/${repo}/traffic/views`
-          )
-        ).then((res) => {
-          const views = res.data.views.map((view: any) => ({
-            ...view,
-            repo,
-            types: "views"
-          }));
-          return {
-            ...res.data,
-            views
-          };
-        })
-      )
-    );
+          if (!clones || !views) {
+            return;
+          }
 
-    const allData = [].concat(
-      ...[...clones.map((c) => c.clones), ...views.map((c) => c.views)]
-    );
+          const allData = [].concat(
+            ...[
+              ...clones.map((c: any) => c.clones),
+              ...views.map((c: any) => c.views)
+            ]
+          );
 
-    const dbURI = flags.mongo || "";
+          const dbURI = flags.mongo || "";
 
-    const client = new MongoClient(dbURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-    client.connect(async (err) => {
-      const collection = client.db().collection("stats");
-      try {
-        await collection.createIndex(
-          { types: 1, timestamp: 1, repo: 1 },
-          { unique: true }
-        );
-        await collection.insertMany(allData, { ordered: false });
-        await client.close();
-        process.exit(0);
-      } catch (error) {
-        console.log(error);
-        process.exit(1);
+          const client = new MongoClient(dbURI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+          });
+
+          return new Promise((resolve, reject) => {
+            client.connect(async (err) => {
+              const collection = client.db().collection("stats");
+              try {
+                await collection.createIndex(
+                  { types: 1, timestamp: 1, repo: 1 },
+                  { unique: true }
+                );
+                await collection.insertMany(allData, { ordered: false });
+                await client.close();
+
+                resolve();
+              } catch (error) {
+                if (
+                  error.message.startsWith(
+                    "E11000 duplicate key error collection"
+                  )
+                ) {
+                  task.title = "Save to db: Skipped some duplicated records";
+                  await client.close();
+                  resolve();
+                } else {
+                  await client.close();
+                  reject(error);
+                }
+              }
+            });
+          });
+        }
       }
+    ]);
+
+    tasks.run().catch((err: any) => {
+      console.error(err);
     });
   }
 }
