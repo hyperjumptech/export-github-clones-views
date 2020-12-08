@@ -18,4 +18,4 @@ jobs:
           GITHUB_PASSWORD: ${{ secrets.GITHB_PASSWORD }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
-          export-github-clones-views -u "$GITHUB_USERNAME" -p "$GITHUB_PASSWORD" -m "$MONGODB_URI" hyperjumptech/export-github-clones-views hyperjumptech/hansip-web hyperjumptech/procheck hyperjumptech/branch-preview hyperjumptech/grule-rule-engine hyperjumptech/hansip hyperjumptech/procheck-configs hyperjumptech/firebase-cronjob hyperjumptech/beda hyperjumptech/react-native-confetti hyperjumptech/js-urai hyperjumptech/universal-update-checker hyperjumptech/jiffy
+          export-github-clones-views hyperjumptech/export-github-clones-views hyperjumptech/hansip-web hyperjumptech/procheck hyperjumptech/branch-preview hyperjumptech/grule-rule-engine hyperjumptech/hansip hyperjumptech/procheck-configs hyperjumptech/firebase-cronjob hyperjumptech/beda hyperjumptech/react-native-confetti hyperjumptech/js-urai hyperjumptech/universal-update-checker hyperjumptech/jiffy

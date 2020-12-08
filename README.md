@@ -39,3 +39,9 @@ Notes:
 2. The repository needs to include both the username/organization and the repository name, e.g., `hyperjumptech/export-github-clones-views`.
 3. Example of `MONGODB_URI`: `mongodb+srv://username:password@mongodb.net/database-name`.
 4. Use the Personal Access Token you generated as `GITHUB_PASSWORD`
+5. You can use environment variables instead of command line arguments. Check out the help of the command line.
+
+# Articles
+
+- Bahasa Indonesia: [Ketika Jumlah Git Clone Menjadi KPI](https://medium.com/hyperjump-tech/melacak-jumlah-git-clone-per-hari-di-github-1c187eaf90bb).
+- English: [How to track the traffic of views and clones of Github Repository](https://nico.fyi/articles/track-github-clones-views-traffic)
